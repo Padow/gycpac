@@ -11,6 +11,9 @@ var winston = require('winston');
 var app = express();
 var config = require('./config.json');
 
+var Converter = require("csvtojson").Converter;
+var converter = new Converter({});
+
 var NodeCouchDb = require('node-couchdb');
 
 // node-couchdb instance talking to external service
@@ -23,6 +26,8 @@ var couchExternal = new NodeCouchDb({
         pass: 'itc'
     }
 });
+
+global.dbname = "gycpac";
 
 // var pathSeparator = path.sep;
 
@@ -148,6 +153,87 @@ io.sockets.on('connection', function(socket){
         logger.error(err);
       }
     });
+  });
+
+  socket.on('import', function(data, callback){
+    logger.info("importing data");
+    //end_parsed will be emitted once parsing finished
+    converter.on("end_parsed", function (jsonArray) {
+      var loop = function(jsonArray, dbname){
+
+        // get existing categories in DB  // TODO function
+        couchExternal.get(dbname, '_all_docs').then(function(data, err){
+            var rows = data.data.rows;
+            for (var i = 0; i < rows.length; i++) {
+              couchExternal.get(dbname, rows[i].id).then(function(data, err){
+                console.log(data.data.categorie);
+              });
+            }
+          });
+
+        for (var i = 0, len = jsonArray.length; i < len; i++) {
+          if(dbname === "categories"){
+
+            json = {}
+            console.log(jsonArray[i].Categorie);
+            json.categorie = jsonArray[i].Categorie;
+            couchExternal.insert(dbname, json).then(function(response, error){
+              if(error){
+                logger.error(error);
+                callback(error, false);
+              }
+
+              logger.debug("document inserted : ");
+              logger.debug(jsonArray[i]);
+            });
+          }
+          if(dbname === "games"){
+            couchExternal.insert(dbname, jsonArray[i]).then(function(response, error){
+              if(error){
+                logger.error(error);
+                callback(error, false);
+              }
+
+              logger.debug("document inserted : ");
+              logger.debug(jsonArray[i]);
+            });
+          }
+
+        }
+        callback(null, true);
+      }
+      var checkDb = function (dbname) {
+        couchExternal.listDatabases().then(function(response, error){
+          logger.info("check database");
+          if(error)
+            logger.error(error);
+
+          if(response.indexOf(dbname) === -1){
+            logger.warn("Database "+dbname+" doesn't exist");
+            couchExternal.createDatabase(dbname).then(function(response, error) {
+              if(error){
+                logger.error(error);
+                callback(error, false);
+              }else{
+                logger.info("Database created");
+                loop(jsonArray, dbname);
+              }
+            });
+          }else{
+            loop(jsonArray, dbname);
+          }
+        });
+      }
+
+      for (var i = 0; i < data.dbname.length; i++) {
+        checkDb(data.dbname[i]);
+      }
+
+
+    });
+
+    //read from file
+    fs.createReadStream("./data.csv").pipe(converter);
   });
 
 

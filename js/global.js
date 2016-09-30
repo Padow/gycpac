@@ -1,5 +1,5 @@
 // load cfg and add socketio script link to index.html
-$(window).ready(function(){
+$(document).ready(function(){
     var config = (function n() {
         var json = null;
         $.ajax({
