@@ -1,0 +1,20 @@
+{
+  "categories":[
+    "sport", "divers", "course","Combat"
+  ],
+  "systems": [
+    "system 22", "Capcom"
+  ],
+  "developers":[
+    "Namco", "Capcom"
+  ]
+  "games":[
+    {
+      "name": "Ace driver",
+      "developer": developers[0],
+      "editor": developers[0],
+      "systems": systems[0],
+      "categorie": categorie[0]
+    }
+  ]
+}

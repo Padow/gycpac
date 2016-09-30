@@ -1,0 +1,201 @@
+body{
+  background: lightgray;
+}
+
+.navbar{
+  border-radius: 0px;
+}
+
+.box{
+  border: solid 1px black;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 0 0 9px 0 !important;
+  cursor:pointer;
+  -moz-box-shadow: 3px 3px 5px 0px #333;
+  -webkit-box-shadow: 3px 3px 5px 0px #333;
+  -o-box-shadow: 3px 3px 5px 0px #333;
+  box-shadow: 3px 3px 5px 0px #333;
+  background: #333;
+  color: white;
+}
+
+
+.home{
+  margin-top: -9px;
+  max-height: 39px;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.xlmodal{
+  width: 100%;
+}
+
+.log{
+  height: 55em;
+  width: 100%;
+  overflow: scroll;
+  background: black;
+  color: white;
+  white-space: pre;
+}
+
+.log > p{
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: monospace;
+  height: 16px;
+  font-size: 16px;
+  width: -moz-max-content;
+  width: -webkit-max-content;
+}
+
+.loader{
+  background-color: rgba(0, 0, 0, 0.70);;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top : 52px;
+  bottom: 0px;
+  z-index: 3;
+}
+
+.vcenter {
+  top: 40%;
+  position: relative;
+}
+
+.status{
+  height: 20px;
+  width: 20px;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.who{
+  width: 90px;
+  height: 90px;
+  border-radius: 45px;
+}
+
+.tab{
+  padding-left: 45px;
+}
+
+.addvm{
+  border: solid 1px black;
+}
+
+.css-form input.ng-invalid.ng-touched {
+  background-color: #FA787E;
+}
+
+.css-form input.ng-valid.ng-touched {
+  background-color: #78FA89;
+}
+
+ul.nav-tabs > li{
+  border: 1px solid #333;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.nav-tabs > li > a{
+  margin-right: 0px;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover{
+  cursor: default;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  color: #FFF;
+  background-color: #333;
+  font-weight: bold;
+}
+
+ul.nav-tabs{
+  border-bottom: 1px solid #333;
+  margin-bottom: 10px;
+}
+
+.select{
+  color: #333;
+}
+
+.white{
+  background: white;
+}
+
+.portok{
+  color: green;
+}
+
+.portko{
+  color: red;
+}
+
+.consolecont{
+  color: #fff;
+  background-color: #4f5356;
+  border-color: #3e3e3e;
+}
+
+.console{
+  height: 30em;
+  overflow: scroll;
+  background: black;
+  color: white;
+}
+
+.registrymessage{
+  position: absolute;
+  right: 0px;
+  z-index: 9999999;
+}
+
+.registrymessage > div > p{
+  white-space: nowrap;
+}
+
+@media (min-width: 768px)
+.consolecont, console {
+  /* position: absolute; */
+  /* top: 50%; */
+  /* right: 20px; */
+  transform: translate(0, -50%);
+  -webkit-transform: translateY(-50%);
+}
+
+.console > p{
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: monospace;
+  height: 16px;
+  font-size: 16px;
+  width: -moz-max-content;
+  width: -webkit-max-content;
+}
