@@ -44,48 +44,48 @@ logger.log(config.log.level, "Log level set to : "+config.log.level);
 
 // browse each folder from dir and add files to epress response
 var walk = function (dir, done) {
-    fs.readdir(dir, function (error, list) {
-        if (error) {
-            return done(error);
-        }
-        //remove from list unwanted folder and file
-        var torem = ["node_modules", ".git", "server.js", "index.html", ".gitignore", "README.md", "package.json", "gycpac.log", "exceptions.log"];
-        torem.forEach(function(entry){
-            var index = list.indexOf(entry);
-            if (index > -1) {
-                list.splice(index, 1);
-            }
-        })
+  fs.readdir(dir, function (error, list) {
+    if (error) {
+      return done(error);
+    }
+    //remove from list unwanted folder and file
+    var torem = ["node_modules", ".git", "server.js", "index.html", ".gitignore", "README.md", "package.json", "gycpac.log", "exceptions.log"];
+    torem.forEach(function(entry){
+      var index = list.indexOf(entry);
+      if (index > -1) {
+        list.splice(index, 1);
+      }
+    })
 
 
-        var i = 0;
+    var i = 0;
 
-        (function next () {
-            var file = list[i++];
+    (function next () {
+      var file = list[i++];
 
-            if (!file) {
-                return done(null);
-            }
+      if (!file) {
+          return done(null);
+      }
 
-            file = dir + '/' + file;
-                fs.stat(file, function (error, stat) {
-                    if (stat && stat.isDirectory()) {
-                        walk(file, function (error) {
-                            next();
-                        });
-                    } else {
-                        file = file.replace(__dirname, "");
-                        logger.log('info', file);
-                        app.get(file, function(req, res) {
-                            fs.readFile(file, function(err, page) {
-                                 res.sendFile(path.join(__dirname+file));
-                            });
-                        });
-                        next();
-                    }
-                });
-        })();
-    });
+      file = dir + '/' + file;
+        fs.stat(file, function (error, stat) {
+          if (stat && stat.isDirectory()) {
+            walk(file, function (error) {
+                next();
+            });
+          } else {
+            file = file.replace(__dirname, "");
+            logger.log('info', file);
+            app.get(file, function(req, res) {
+              fs.readFile(file, function(err, page) {
+                res.sendFile(path.join(__dirname+file));
+              });
+            });
+            next();
+          }
+        });
+    })();
+  });
 };
 
 app.all('/', function(req, res, next) {
@@ -93,20 +93,20 @@ app.all('/', function(req, res, next) {
   res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept, Origin");
   next();
- });
+});
 
- app.use(function(req, res, next) { //allow cross origin requests
-        res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
- });
+app.use(function(req, res, next) { //allow cross origin requests
+  res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 // add index.html to response
 app.get('/', function(req, res, next) {
-    fs.readFile('index.html', function(err, page) {
-         res.sendFile(path.join(__dirname+'/index.html'));
-    });
+  fs.readFile('index.html', function(err, page) {
+    res.sendFile(path.join(__dirname+'/index.html'));
+  });
 });
 
 
@@ -117,14 +117,13 @@ logger.log('info', '------------------------------------------------------------
 logger.log('info', 'Loading files.');
 logger.log('info', '-------------------------------------------------------------');
 walk(__dirname, function(error) {
-    if (error) {
-        throw error;
-    } else {
-
-        logger.log('info', '-------------------------------------------------------------');
-        logger.log('info', 'finished.');
-        logger.log('info', '-------------------------------------------------------------');
-    }
+  if (error) {
+    throw error;
+  } else {
+    logger.log('info', '-------------------------------------------------------------');
+    logger.log('info', 'finished.');
+    logger.log('info', '-------------------------------------------------------------');
+  }
 });
 
 var io = require('socket.io').listen(httpServer);
