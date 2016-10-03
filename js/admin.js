@@ -27,7 +27,7 @@ app.controller("Admin",function($scope, socket) {
    };
 
    $scope.import = function(){
-     socket.emit("import",{"dbname": ["games", "categories"]} , function (err, res){
+     socket.emit("import",{"dbname": ["categories", "games"]} , function (err, res){
        if(res)
         document.location.href="./#/catalog";
      });

@@ -157,49 +157,53 @@ io.sockets.on('connection', function(socket){
 
   socket.on('import', function(data, callback){
     logger.info("importing data");
-    //end_parsed will be emitted once parsing finished
     converter.on("end_parsed", function (jsonArray) {
+      var insertGame = function(json){
+        couchExternal.insert("games", json).then(function(response, error){
+          if(error){
+            logger.error(error);
+            callback(error, false);
+          }
+          logger.debug("document inserted : ");
+          logger.debug(json);
+        });
+      }
       var loop = function(jsonArray, dbname){
-
-        // get existing categories in DB  // TODO function
-        couchExternal.get(dbname, '_all_docs').then(function(data, err){
-            var rows = data.data.rows;
-            for (var i = 0; i < rows.length; i++) {
-              couchExternal.get(dbname, rows[i].id).then(function(data, err){
-                console.log(data.data.categorie);
-              });
-            }
-          });
-
+        var categories = [];
+        // insert categories
         for (var i = 0, len = jsonArray.length; i < len; i++) {
           if(dbname === "categories"){
+            if(categories.indexOf(jsonArray[i].Categorie) === -1){
+              categories.push(jsonArray[i].Categorie);
+              json = {};
+              json.categorie = jsonArray[i].Categorie;
+              couchExternal.insert("categories", json).then(function(response, error){
+                if(error){
+                  logger.error(error);
+                  callback(error, false);
+                }
+                logger.debug("document inserted : ");
+                logger.debug(json);
 
-            json = {}
-            console.log(jsonArray[i].Categorie);
-            json.categorie = jsonArray[i].Categorie;
-            couchExternal.insert(dbname, json).then(function(response, error){
-              if(error){
-                logger.error(error);
-                callback(error, false);
-              }
-
-              logger.debug("document inserted : ");
-              logger.debug(jsonArray[i]);
-            });
+              });
+            }
           }
-          if(dbname === "games"){
-            couchExternal.insert(dbname, jsonArray[i]).then(function(response, error){
-              if(error){
-                logger.error(error);
-                callback(error, false);
-              }
-
-              logger.debug("document inserted : ");
-              logger.debug(jsonArray[i]);
-            });
-          }
-
         }
+        // get categories and insert games
+        couchExternal.get(dbname, '_all_docs').then(function(data, err){
+          var rows = data.data.rows;
+          for (var j = 0; j < rows.length; j++) {
+            couchExternal.get(dbname, rows[j].id).then(function(data, err){
+              for(var k = 0, lenk = jsonArray.length; k < lenk; k++){
+                if(data.data.categorie === jsonArray[k].Categorie){
+                  gameJson = jsonArray[k];
+                  gameJson.Categorie = data.data._id;
+                  insertGame(gameJson);
+                }
+              }
+            });
+          }
+         });
         callback(null, true);
       }
       var checkDb = function (dbname) {
