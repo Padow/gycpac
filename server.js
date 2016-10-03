@@ -1,11 +1,6 @@
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'; // allows to query auto-signed registry (Not really glam)
-
 var http = require('http');
-// var https = require('https');
-// var httpreq = require('httpreq');
 var fs = require('fs');
 var express = require('express');
-// var request = require("request");
 var path = require("path");
 var winston = require('winston');
 var app = express();
@@ -29,8 +24,6 @@ var couchExternal = new NodeCouchDb({
 
 global.dbname = "gycpac";
 
-// var pathSeparator = path.sep;
-
 // init logger
 var logger = new (winston.Logger)({
   transports: [
@@ -45,7 +38,6 @@ var logger = new (winston.Logger)({
 });
 logger.level = config.log.level;
 logger.log(config.log.level, "Log level set to : "+config.log.level);
-
 
 // browse each folder from dir and add files to epress response
 var walk = function (dir, done) {
